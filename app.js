@@ -1,24 +1,16 @@
-let tg; // будет присвоен после загрузки страницы
+let tg;
+
+const CURRENCY = "₽";
+const fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
+const money = (n) => `${fmt.format(n)} ${CURRENCY}`;
 
 const products = [
-  {
-    id: "mavic4pro",
-    name: "DJI Mavic 4 Pro (комбо)",
-    price: 209900,
-    img: "https://www1.djicdn.com/cms/uploads/d275d97e1a2bbcf062c59b65d8a2e0d3@3840*2160.png"
-  },
-  {
-    id: "mavic3pro",
-    name: "DJI Mavic 3 Pro (комбо)",
-    price: 179900,
-    img: "https://www1.djicdn.com/cms/uploads/5c464c7a88a9a2f34f11342e893f8cfc@3840*2160.png"
-  },
-  {
-    id: "mini4pro",
-    name: "DJI Mini 4 Pro Fly More",
-    price: 122900,
-    img: "https://www1.djicdn.com/cms/uploads/f3e13d40c7f307f2de8e2e4e69c5d45b@3840*2160.png"
-  }
+  { id:"mavic4pro", name:"DJI Mavic 4 Pro (комбо)", price:209900,
+    img:"https://www1.djicdn.com/cms/uploads/d275d97e1a2bbcf062c59b65d8a2e0d3@3840*2160.png" },
+  { id:"mavic3pro", name:"DJI Mavic 3 Pro (комбо)", price:179900,
+    img:"https://www1.djicdn.com/cms/uploads/5c464c7a88a9a2f34f11342e893f8cfc@3840*2160.png" },
+  { id:"mini4pro",  name:"DJI Mini 4 Pro Fly More", price:122900,
+    img:"https://www1.djicdn.com/cms/uploads/f3e13d40c7f307f2de8e2e4e69c5d45b@3840*2160.png" }
 ];
 
 const cart = new Map();
@@ -30,10 +22,11 @@ function render(){
       <img src="${p.img}" alt="${p.name}"/>
       <div class="body">
         <div class="name">${p.name}</div>
-        <div class="price">€${p.price.toFixed(2)}</div>
+        <div class="price">${money(p.price)}</div>
         <button class="add" data-id="${p.id}">ADD</button>
       </div>
     </div>`).join("");
+
   $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", () => {
     const id = btn.dataset.id;
     cart.set(id, (cart.get(id)||0)+1);
@@ -51,9 +44,10 @@ function updateMainButton(){
     const f = document.querySelector(".footer"); if (f) f.remove();
     return;
   }
-  const label = `Checkout • ${qty} • €${sum.toFixed(2)}`;
+  const label = `Checkout • ${qty} • ${money(sum)}`;
   if(tg){
     tg.MainButton.setParams({text:label,is_visible:true});
+    tg.MainButton.enable();
     tg.MainButton.show();
   } else {
     showFooter(label);
@@ -72,23 +66,66 @@ function showFooter(text){
   document.body.appendChild(f);
 }
 
-function submitOrder(){
-  const order = [...cart.entries()].map(([id,q])=>{
-    const p = products.find(x=>x.id===id);
-    return { id, name:p.name, price:p.price, qty:q };
-  });
-  const payload = { order, ts:Date.now(), total: order.reduce((s,i)=>s+i.price*i.qty,0) };
-  if(tg){ tg.sendData(JSON.stringify(payload)); tg.close(); }
-  else { alert("Order:\n"+JSON.stringify(payload,null,2)); }
+function showOrderForm(onSubmit) {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <form class="form">
+      <h3 class="h3">Оформить заказ</h3>
+      <input required name="name" class="inp" placeholder="Имя">
+      <input required name="phone" class="inp" type="tel" pattern="\\+?\\d{10,15}" placeholder="Телефон (например, +79271234567)">
+      <textarea name="comment" class="ta" rows="2" placeholder="Комментарий (необязательно)"></textarea>
+      <div class="row">
+        <button type="button" class="btn gray" id="cancelBtn">Отмена</button>
+        <button type="submit" class="btn blue">Подтвердить</button>
+      </div>
+    </form>
+  `;
+  document.body.appendChild(modal);
+  modal.querySelector("form").onsubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    onSubmit({
+      name: form.name.value.trim(),
+      phone: form.phone.value.trim(),
+      comment: form.comment.value.trim()
+    });
+    modal.remove();
+  };
+  modal.querySelector("#cancelBtn").onclick = () => modal.remove();
 }
 
-// Ждём, пока Telegram подставит объект в webview, и только потом стартуем
+function submitOrder(){
+  showOrderForm((user) => {
+    const order = [...cart.entries()].map(([id,q])=>{
+      const p = products.find(x=>x.id===id);
+      return { id, name:p.name, price:p.price, qty:q };
+    });
+    const payload = { order, ts:Date.now(), total: order.reduce((s,i)=>s+i.price*i.qty,0), user };
+
+    if (tg) {
+      tg.MainButton.showProgress(true);
+      try {
+        tg.sendData(JSON.stringify(payload));
+      } finally {
+        setTimeout(() => {
+          tg.MainButton.hideProgress();
+          tg.close();
+        }, 300);
+      }
+    } else {
+      alert("Order:\n"+JSON.stringify(payload,null,2));
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  tg = window.Telegram?.WebApp ?? null;
   render();
   if(tg){
     tg.ready();
     tg.expand();
     tg.MainButton.onClick(submitOrder);
+    tg.onEvent("mainButtonClicked", submitOrder); // iOS safety
   }
 });
