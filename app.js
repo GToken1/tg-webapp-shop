@@ -1,11 +1,10 @@
-const tg = window.Telegram?.WebApp;
+let tg; // будет присвоен после загрузки страницы
+
 const products = [
   { id:"p1", name:"DJI Mini 4 Pro", price:979.00, img:"https://via.placeholder.com/800?text=DJI+Mini+4+Pro" },
   { id:"p2", name:"DJI Air 3 Fly More", price:1499.00, img:"https://via.placeholder.com/800?text=DJI+Air+3" },
   { id:"p3", name:"Action 4 Camera", price:399.00, img:"https://via.placeholder.com/800?text=Action+4" },
   { id:"p4", name:"FPV Combo", price:1299.00, img:"https://via.placeholder.com/800?text=FPV+Combo" },
-  { id:"p5", name:"Tiramisu Classic (0.33L)", price:6.90, img:"https://via.placeholder.com/800?text=Tiramisu+0.33L" },
-  { id:"p6", name:"Tiramisu Raspberry (0.33L)", price:7.50, img:"https://via.placeholder.com/800?text=Tiramisu+Raspberry" }
 ];
 
 const cart = new Map();
@@ -35,11 +34,16 @@ function updateMainButton(){
   },0);
   if(!qty){
     if(tg){ tg.MainButton.hide(); tg.MainButton.setParams({text:""}); }
+    const f = document.querySelector(".footer"); if (f) f.remove();
     return;
   }
   const label = `Checkout • ${qty} • €${sum.toFixed(2)}`;
-  if(tg){ tg.MainButton.setParams({text:label,is_visible:true}); tg.MainButton.show(); }
-  else  { showFooter(label); }
+  if(tg){
+    tg.MainButton.setParams({text:label,is_visible:true});
+    tg.MainButton.show();
+  } else {
+    showFooter(label);
+  }
 }
 
 function showFooter(text){
@@ -61,8 +65,16 @@ function submitOrder(){
   });
   const payload = { order, ts:Date.now(), total: order.reduce((s,i)=>s+i.price*i.qty,0) };
   if(tg){ tg.sendData(JSON.stringify(payload)); tg.close(); }
-  else { alert("Order:\\n"+JSON.stringify(payload,null,2)); }
+  else { alert("Order:\n"+JSON.stringify(payload,null,2)); }
 }
 
-if(tg){ tg.ready(); tg.MainButton.onClick(submitOrder); }
-render();
+// Ждём, пока Telegram подставит объект в webview, и только потом стартуем
+document.addEventListener("DOMContentLoaded", () => {
+  tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  render();
+  if(tg){
+    tg.ready();
+    tg.expand();
+    tg.MainButton.onClick(submitOrder);
+  }
+});
