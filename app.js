@@ -1,10 +1,24 @@
 let tg; // будет присвоен после загрузки страницы
 
 const products = [
-  { id:"p1", name:"DJI Mini 4 Pro", price:979.00, img:"https://via.placeholder.com/800?text=DJI+Mini+4+Pro" },
-  { id:"p2", name:"DJI Air 3 Fly More", price:1499.00, img:"https://via.placeholder.com/800?text=DJI+Air+3" },
-  { id:"p3", name:"Action 4 Camera", price:399.00, img:"https://via.placeholder.com/800?text=Action+4" },
-  { id:"p4", name:"FPV Combo", price:1299.00, img:"https://via.placeholder.com/800?text=FPV+Combo" },
+  {
+    id: "mavic4pro",
+    name: "DJI Mavic 4 Pro (комбо)",
+    price: 209900,
+    img: "https://www1.djicdn.com/cms/uploads/d275d97e1a2bbcf062c59b65d8a2e0d3@3840*2160.png"
+  },
+  {
+    id: "mavic3pro",
+    name: "DJI Mavic 3 Pro (комбо)",
+    price: 179900,
+    img: "https://www1.djicdn.com/cms/uploads/5c464c7a88a9a2f34f11342e893f8cfc@3840*2160.png"
+  },
+  {
+    id: "mini4pro",
+    name: "DJI Mini 4 Pro Fly More",
+    price: 122900,
+    img: "https://www1.djicdn.com/cms/uploads/f3e13d40c7f307f2de8e2e4e69c5d45b@3840*2160.png"
+  }
 ];
 
 const cart = new Map();
