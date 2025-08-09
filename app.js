@@ -24,11 +24,14 @@ const products = [
     name:"DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
     price: 239900,
     images: [
-      "mavic4pro-512gb-creator-combo-1.jpg","mavic4pro-512gb-creator-combo-2.jpg",
-      "mavic4pro-512gb-creator-combo-3.jpg","mavic4pro-512gb-creator-combo-4.jpg",
-      "mavic4pro-512gb-creator-combo-5.jpg","mavic4pro-512gb-creator-combo-6.jpg",
-      "mavic4pro-512gb-creator-combo-7.jpg","mavic4pro-7.jpg"
-    ]
+  "mavic4pro-512gb-creator-combo-1.jpg",
+  "mavic4pro-512gb-creator-combo-2.jpg",
+  "mavic4pro-512gb-creator-combo-3.jpg",
+  "mavic4pro-512gb-creator-combo-4.jpg",
+  "mavic4pro-512gb-creator-combo-5.jpg",
+  "mavic4pro-512gb-creator-combo-6.jpg",
+  "mavic4pro-512gb-creator-combo-7.jpg"
+]
   },
   {
     id:"mavic4pro_flymore",
