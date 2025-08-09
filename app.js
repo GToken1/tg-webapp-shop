@@ -1,116 +1,119 @@
 let tg;
 
-// ₽ формат
+// ===== ₽ формат
 const CURRENCY = "₽";
 const fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 const money = n => `${fmt.format(n)} ${CURRENCY}`;
 
-// Ступенчатая наценка
+// ===== ступенчатая наценка
 function markup(base) {
   if (base >= 150000) return Math.round(base * 1.30); // +30%
   if (base >=  80000) return Math.round(base * 1.40); // +40%
   return Math.round(base * 1.60);                      // +60%
 }
-// Итоговая цена товара: если задан price — берём его; иначе считаем из base
+// цена товара: если есть price — берём его, иначе считаем из base
 function priceOf(p) {
   if (typeof p.price === "number") return p.price;
-  if (typeof p.base === "number")  return markup(p.base);
+  if (typeof p.base  === "number") return markup(p.base);
   return 0;
 }
 
+// ===== кэш-бастинг для картинок (чтобы не было "вопросиков")
+const IMG_VER = "v=7";
+const bust = src => src.includes("?") ? `${src}&${IMG_VER}` : `${src}?${IMG_VER}`;
+
 /**
  * ТОВАРЫ
- * Сейчас стоят фикс-цены (price). Хотите автонценку — замените price на base.
- * Примеры:
- *   { id:"...", name:"...", base: 172000, images:[...] }  // будет посчитано по правилам
- *   { id:"...", name:"...", price: 209900, images:[...] } // цена фикс
+ * Сейчас я перевёл на auto-markup: указываем base (твоя референтная/закупка),
+ * итог считается по правилам. Я поставил base так, чтобы конечные цены
+ * были близки к текущим (можешь потом подставить свои реальные base).
  */
 const products = [
   {
     id: "mavic4pro",
     name: "DJI Mavic 4 Pro (дрон)",
-    price: 209900,
+    base: 161500, // ≈ 209 900 при +30%
     images: [
-      "mavic4pro-1.jpg?v=5","mavic4pro-2.jpg?v=5","mavic4pro-3.jpg?v=5",
-      "mavic4pro-4.jpg?v=5","mavic4pro-5.jpg?v=5","mavic4pro-6.jpg?v=5",
-      "mavic4pro-7.jpg?v=5"
-    ]
+      "mavic4pro-1.jpg","mavic4pro-2.jpg","mavic4pro-3.jpg",
+      "mavic4pro-4.jpg","mavic4pro-5.jpg","mavic4pro-6.jpg","mavic4pro-7.jpg"
+    ].map(bust)
   },
   {
     id: "mavic4pro_creator",
     name: "DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
-    price: 239900,
+    base: 184500, // ≈ 239 900 при +30%
     images: [
-      "mavic4pro-512gb-creator-combo-1.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-2.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-3.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-4.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-5.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-6.jpg?v=5",
-      "mavic4pro-512gb-creator-combo-7.jpg?v=5"
-    ]
+      "mavic4pro-512gb-creator-combo-1.jpg",
+      "mavic4pro-512gb-creator-combo-2.jpg",
+      "mavic4pro-512gb-creator-combo-3.jpg",
+      "mavic4pro-512gb-creator-combo-4.jpg",
+      "mavic4pro-512gb-creator-combo-5.jpg",
+      "mavic4pro-512gb-creator-combo-6.jpg",
+      "mavic4pro-512gb-creator-combo-7.jpg"
+    ].map(bust)
   },
   {
     id: "mavic4pro_flymore",
     name: "DJI Mavic 4 Pro Fly More Combo",
-    price: 199900,
+    base: 153800, // ≈ 199 900 при +30%
     images: [
-      "mavic4proflymorecombo-1.jpg?v=5",
-      "mavic4proflymorecombo-2.jpg?v=5",
-      "mavic4proflymorecombo-3jpg?v=5", // имя в репо именно такое, без точки
-      "mavic4proflymorecombo-4.jpg?v=5",
-      "mavic4proflymorecombo-5.jpg?v=5",
-      "mavic4proflymorecombo-6.jpg?v=5",
-      "mavic4proflymorecombo-7.jpg?v=5"
-    ]
+      "mavic4proflymorecombo-1.jpg",
+      "mavic4proflymorecombo-2.jpg",
+      // файл у тебя назван без точки: "mavic4proflymorecombo-3jpg.webp"
+      "mavic4proflymorecombo-3jpg.webp",
+      "mavic4proflymorecombo-4.jpg",
+      "mavic4proflymorecombo-5.jpg",
+      "mavic4proflymorecombo-6.jpg",
+      "mavic4proflymorecombo-7.jpg"
+    ].map(bust)
   },
   {
     id: "neo_flymore",
     name: "DJI Neo Fly More Combo",
-    price: 59900,
+    base: 37440, // ≈ 59 900 при +60%
     images: [
-      "neo-fly-more-combo-1.jpg?v=5","neo-fly-more-combo-2.jpg?v=5",
-      "neo-fly-more-combo-3.jpg?v=5","neo-fly-more-combo-4.jpg?v=5",
-      "neo-fly-more-combo-5.jpg?v=5","neo-fly-more-combo-6.jpg?v=5"
-    ]
+      "neo-fly-more-combo-1.jpg","neo-fly-more-combo-2.jpg",
+      "neo-fly-more-combo-3.jpg","neo-fly-more-combo-4.jpg",
+      "neo-fly-more-combo-5.jpg","neo-fly-more-combo-6.jpg"
+    ].map(bust)
   },
   {
     id: "neo_motion_flymore",
     name: "DJI Neo Motion Fly More Combo",
-    price: 69900,
+    base: 43690, // ≈ 69 900 при +60%
     images: [
-      "neo-motion-fly-more-combo-1.jpg?v=5","neo-motion-fly-more-combo-2.jpg?v=5",
-      "neo-motion-fly-more-combo-3.jpg?v=5","neo-motion-fly-more-combo-4.jpg?v=5",
-      "neo-motion-fly-more-combo-5.jpg?v=5","neo-motion-fly-more-combo-6.jpg?v=5",
-      "neo-motion-fly-more-combo-7.jpg?v=5"
-    ]
+      "neo-motion-fly-more-combo-1.jpg","neo-motion-fly-more-combo-2.jpg",
+      "neo-motion-fly-more-combo-3.jpg","neo-motion-fly-more-combo-4.jpg",
+      "neo-motion-fly-more-combo-5.jpg","neo-motion-fly-more-combo-6.jpg",
+      "neo-motion-fly-more-combo-7.jpg"
+    ].map(bust)
   },
   {
     id: "osmo360_popular",
     name: "DJI Osmo 360 Popular Combo",
-    price: 47900,
+    base: 29940, // ≈ 47 900 при +60%
     images: [
-      "osmo360PopularCombo-1.jpg?v=5","osmo360PopularCombo-2.jpg?v=5",
-      "osmo360PopularCombo-3.jpg?v=5","osmo360PopularCombo-4.jpg?v=5",
-      "osmo360PopularCombo-5.jpg?v=5","osmo360PopularCombo-6.jpg?v=5",
-      "osmo360PopularCombo-7.jpg?v=5","osmo360PopularCombo-8.jpg?v=5",
-      "osmo360PopularCombo-9.jpg?v=5","osmo360PopularCombo-10.jpg?v=5"
-    ]
+      "osmo360PopularCombo-1.jpg","osmo360PopularCombo-2.jpg",
+      "osmo360PopularCombo-3.jpg","osmo360PopularCombo-4.jpg",
+      "osmo360PopularCombo-5.jpg","osmo360PopularCombo-6.jpg",
+      "osmo360PopularCombo-7.jpg","osmo360PopularCombo-8.jpg",
+      "osmo360PopularCombo-9.jpg","osmo360PopularCombo-10.jpg"
+    ].map(bust)
   },
   {
     id: "micmini",
     name: "DJI Mic Mini (2TX+1RX+Case)",
-    price: 19990,
+    base: 12490, // ≈ 19 990 при +60%
     images: [
-      "MicMini-2TX+1RX+ChargingCase-1.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-2.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-3.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-4.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-5.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-6.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-7.jpg?v=5",
-      "MicMini-2TX+1RX+ChargingCase-8.jpg?v=5"
-    ]
+      "MicMini-2TX+1RX+ChargingCase-1.jpg",
+      "MicMini-2TX+1RX+ChargingCase-2.jpg",
+      "MicMini-2TX+1RX+ChargingCase-3.jpg",
+      "MicMini-2TX+1RX+ChargingCase-4.jpg",
+      "MicMini-2TX+1RX+ChargingCase-5.jpg",
+      "MicMini-2TX+1RX+ChargingCase-6.jpg",
+      "MicMini-2TX+1RX+ChargingCase-7.jpg",
+      "MicMini-2TX+1RX+ChargingCase-8.jpg"
+    ].map(bust)
   }
 ];
 
