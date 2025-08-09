@@ -57,7 +57,7 @@ const products = [
     images: [
       "mavic4proflymorecombo-1.jpg?v=5",
       "mavic4proflymorecombo-2.jpg?v=5",
-      "mavic4proflymorecombo-3jpg.webp?v=5", // имя в репо именно такое, без точки
+      "mavic4proflymorecombo-3jpg?v=5", // имя в репо именно такое, без точки
       "mavic4proflymorecombo-4.jpg?v=5",
       "mavic4proflymorecombo-5.jpg?v=5",
       "mavic4proflymorecombo-6.jpg?v=5",
