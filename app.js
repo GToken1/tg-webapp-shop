@@ -36,7 +36,7 @@ const products = [
     price: 199900,
     images: [
       "mavic4proflymorecombo-1.jpg","mavic4proflymorecombo-2.jpg",
-      "mavic4proflymorecombo-3jpg.webp", // у тебя в репо именно такое имя
+      "mavic4proflymorecombo-3jpg", 
       "mavic4proflymorecombo-4.jpg","mavic4proflymorecombo-5.jpg",
       "mavic4proflymorecombo-6.jpg","mavic4proflymorecombo-7.jpg"
     ]
