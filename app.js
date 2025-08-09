@@ -5,9 +5,25 @@ const CURRENCY = "₽";
 const fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 const money = n => `${fmt.format(n)} ${CURRENCY}`;
 
+// Ступенчатая наценка
+function markup(base) {
+  if (base >= 150000) return Math.round(base * 1.30); // +30%
+  if (base >=  80000) return Math.round(base * 1.40); // +40%
+  return Math.round(base * 1.60);                      // +60%
+}
+// Итоговая цена товара: если задан price — берём его; иначе считаем из base
+function priceOf(p) {
+  if (typeof p.price === "number") return p.price;
+  if (typeof p.base === "number")  return markup(p.base);
+  return 0;
+}
+
 /**
- * ТОВАРЫ — цены примерные, пути к фото точные из твоего репо.
- * Для проблемных картинок добавил ?v=4 — это ломает кеш Telegram WebView.
+ * ТОВАРЫ
+ * Сейчас стоят фикс-цены (price). Хотите автонценку — замените price на base.
+ * Примеры:
+ *   { id:"...", name:"...", base: 172000, images:[...] }  // будет посчитано по правилам
+ *   { id:"...", name:"...", price: 209900, images:[...] } // цена фикс
  */
 const products = [
   {
@@ -15,9 +31,9 @@ const products = [
     name: "DJI Mavic 4 Pro (дрон)",
     price: 209900,
     images: [
-      "mavic4pro-1.jpg?v=4","mavic4pro-2.jpg?v=4","mavic4pro-3.jpg?v=4",
-      "mavic4pro-4.jpg?v=4","mavic4pro-5.jpg?v=4","mavic4pro-6.jpg?v=4",
-      "mavic4pro-7.jpg?v=4"
+      "mavic4pro-1.jpg?v=5","mavic4pro-2.jpg?v=5","mavic4pro-3.jpg?v=5",
+      "mavic4pro-4.jpg?v=5","mavic4pro-5.jpg?v=5","mavic4pro-6.jpg?v=5",
+      "mavic4pro-7.jpg?v=5"
     ]
   },
   {
@@ -25,13 +41,13 @@ const products = [
     name: "DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
     price: 239900,
     images: [
-      "mavic4pro-512gb-creator-combo-1.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-2.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-3.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-4.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-5.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-6.jpg?v=4",
-      "mavic4pro-512gb-creator-combo-7.jpg?v=4"
+      "mavic4pro-512gb-creator-combo-1.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-2.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-3.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-4.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-5.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-6.jpg?v=5",
+      "mavic4pro-512gb-creator-combo-7.jpg?v=5"
     ]
   },
   {
@@ -39,13 +55,13 @@ const products = [
     name: "DJI Mavic 4 Pro Fly More Combo",
     price: 199900,
     images: [
-      "mavic4proflymorecombo-1.jpg?v=4",
-      "mavic4proflymorecombo-2.jpg?v=4",
-      "mavic4proflymorecombo-3jpg.webp?v=4", // в репо именно так назван файл (без точки)
-      "mavic4proflymorecombo-4.jpg?v=4",
-      "mavic4proflymorecombo-5.jpg?v=4",
-      "mavic4proflymorecombo-6.jpg?v=4",
-      "mavic4proflymorecombo-7.jpg?v=4"
+      "mavic4proflymorecombo-1.jpg?v=5",
+      "mavic4proflymorecombo-2.jpg?v=5",
+      "mavic4proflymorecombo-3jpg.webp?v=5", // имя в репо именно такое, без точки
+      "mavic4proflymorecombo-4.jpg?v=5",
+      "mavic4proflymorecombo-5.jpg?v=5",
+      "mavic4proflymorecombo-6.jpg?v=5",
+      "mavic4proflymorecombo-7.jpg?v=5"
     ]
   },
   {
@@ -53,9 +69,9 @@ const products = [
     name: "DJI Neo Fly More Combo",
     price: 59900,
     images: [
-      "neo-fly-more-combo-1.jpg?v=4","neo-fly-more-combo-2.jpg?v=4",
-      "neo-fly-more-combo-3.jpg?v=4","neo-fly-more-combo-4.jpg?v=4",
-      "neo-fly-more-combo-5.jpg?v=4","neo-fly-more-combo-6.jpg?v=4"
+      "neo-fly-more-combo-1.jpg?v=5","neo-fly-more-combo-2.jpg?v=5",
+      "neo-fly-more-combo-3.jpg?v=5","neo-fly-more-combo-4.jpg?v=5",
+      "neo-fly-more-combo-5.jpg?v=5","neo-fly-more-combo-6.jpg?v=5"
     ]
   },
   {
@@ -63,10 +79,10 @@ const products = [
     name: "DJI Neo Motion Fly More Combo",
     price: 69900,
     images: [
-      "neo-motion-fly-more-combo-1.jpg?v=4","neo-motion-fly-more-combo-2.jpg?v=4",
-      "neo-motion-fly-more-combo-3.jpg?v=4","neo-motion-fly-more-combo-4.jpg?v=4",
-      "neo-motion-fly-more-combo-5.jpg?v=4","neo-motion-fly-more-combo-6.jpg?v=4",
-      "neo-motion-fly-more-combo-7.jpg?v=4"
+      "neo-motion-fly-more-combo-1.jpg?v=5","neo-motion-fly-more-combo-2.jpg?v=5",
+      "neo-motion-fly-more-combo-3.jpg?v=5","neo-motion-fly-more-combo-4.jpg?v=5",
+      "neo-motion-fly-more-combo-5.jpg?v=5","neo-motion-fly-more-combo-6.jpg?v=5",
+      "neo-motion-fly-more-combo-7.jpg?v=5"
     ]
   },
   {
@@ -74,11 +90,11 @@ const products = [
     name: "DJI Osmo 360 Popular Combo",
     price: 47900,
     images: [
-      "osmo360PopularCombo-1.jpg?v=4","osmo360PopularCombo-2.jpg?v=4",
-      "osmo360PopularCombo-3.jpg?v=4","osmo360PopularCombo-4.jpg?v=4",
-      "osmo360PopularCombo-5.jpg?v=4","osmo360PopularCombo-6.jpg?v=4",
-      "osmo360PopularCombo-7.jpg?v=4","osmo360PopularCombo-8.jpg?v=4",
-      "osmo360PopularCombo-9.jpg?v=4","osmo360PopularCombo-10.jpg?v=4"
+      "osmo360PopularCombo-1.jpg?v=5","osmo360PopularCombo-2.jpg?v=5",
+      "osmo360PopularCombo-3.jpg?v=5","osmo360PopularCombo-4.jpg?v=5",
+      "osmo360PopularCombo-5.jpg?v=5","osmo360PopularCombo-6.jpg?v=5",
+      "osmo360PopularCombo-7.jpg?v=5","osmo360PopularCombo-8.jpg?v=5",
+      "osmo360PopularCombo-9.jpg?v=5","osmo360PopularCombo-10.jpg?v=5"
     ]
   },
   {
@@ -86,14 +102,14 @@ const products = [
     name: "DJI Mic Mini (2TX+1RX+Case)",
     price: 19990,
     images: [
-      "MicMini-2TX+1RX+ChargingCase-1.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-2.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-3.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-4.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-5.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-6.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-7.jpg?v=4",
-      "MicMini-2TX+1RX+ChargingCase-8.jpg?v=4"
+      "MicMini-2TX+1RX+ChargingCase-1.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-2.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-3.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-4.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-5.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-6.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-7.jpg?v=5",
+      "MicMini-2TX+1RX+ChargingCase-8.jpg?v=5"
     ]
   }
 ];
@@ -107,12 +123,11 @@ function render(){
       <img src="${p.images[0]}" alt="${p.name}"/>
       <div class="body">
         <div class="name">${p.name}</div>
-        <div class="price">${money(p.price)}</div>
+        <div class="price">${money(priceOf(p))}</div>
         <button class="add" data-id="${p.id}">ADD</button>
       </div>
     </div>`).join("");
 
-  // Добавление в корзину
   $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", (e) => {
     e.stopPropagation();
     const id = btn.dataset.id;
@@ -120,7 +135,6 @@ function render(){
     updateMainButton();
   }));
 
-  // Открытие галереи
   $list.querySelectorAll("[data-open]").forEach(card => {
     card.addEventListener("click", () => {
       const id = card.getAttribute("data-open");
@@ -133,7 +147,7 @@ function render(){
 function updateMainButton(){
   const qty = [...cart.values()].reduce((a,b)=>a+b,0);
   const sum = [...cart.entries()].reduce((s,[id,q])=>{
-    const p = products.find(x=>x.id===id); return s + p.price*q;
+    const p = products.find(x=>x.id===id); return s + priceOf(p)*q;
   },0);
   if(!qty){
     if(tg){ tg.MainButton.hide(); tg.MainButton.setParams({text:""}); }
@@ -175,7 +189,7 @@ function openGallery(p){
       </div>
       <div class="row" style="justify-content:space-between">
         <button class="btn gray" id="prev">◀</button>
-        <div style="font-weight:700">${money(p.price)}</div>
+        <div style="font-weight:700">${money(priceOf(p))}</div>
         <button class="btn blue" id="add">ADD</button>
       </div>
       <button class="btn gray" id="close" style="align-self:flex-end">Закрыть</button>
@@ -225,7 +239,7 @@ function submitOrder(){
   showOrderForm((user) => {
     const order = [...cart.entries()].map(([id,q])=>{
       const p = products.find(x=>x.id===id);
-      return { id, name:p.name, price:p.price, qty:q };
+      return { id, name:p.name, price:priceOf(p), qty:q };
     });
     const payload = { order, ts:Date.now(), total: order.reduce((s,i)=>s+i.price*i.qty,0), user };
 
