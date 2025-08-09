@@ -18,15 +18,14 @@ function priceOf(p) {
   return 0;
 }
 
-// ===== кэш-бастинг для картинок (чтобы не было "вопросиков")
-const IMG_VER = "v=7";
+// ===== кэш-бастинг для картинок (чтобы не было «вопросиков»)
+const IMG_VER = "v=9";
 const bust = src => src.includes("?") ? `${src}&${IMG_VER}` : `${src}?${IMG_VER}`;
 
 /**
  * ТОВАРЫ
- * Сейчас я перевёл на auto-markup: указываем base (твоя референтная/закупка),
- * итог считается по правилам. Я поставил base так, чтобы конечные цены
- * были близки к текущим (можешь потом подставить свои реальные base).
+ * Для стабильности исключил проблемный файл webp (с неправильным именем).
+ * Если хочешь вернуть — можно, но лучше переименовать его нормально на GitHub.
  */
 const products = [
   {
@@ -59,8 +58,7 @@ const products = [
     images: [
       "mavic4proflymorecombo-1.jpg",
       "mavic4proflymorecombo-2.jpg",
-      // файл у тебя назван без точки: "mavic4proflymorecombo-3jpg.webp"
-      "mavic4proflymorecombo-3jpg.webp",
+      // "mavic4proflymorecombo-3jpg.webp"  // исключили проблемную картинку
       "mavic4proflymorecombo-4.jpg",
       "mavic4proflymorecombo-5.jpg",
       "mavic4proflymorecombo-6.jpg",
@@ -131,6 +129,7 @@ function render(){
       </div>
     </div>`).join("");
 
+  // add to cart
   $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", (e) => {
     e.stopPropagation();
     const id = btn.dataset.id;
@@ -138,6 +137,7 @@ function render(){
     updateMainButton();
   }));
 
+  // open gallery
   $list.querySelectorAll("[data-open]").forEach(card => {
     card.addEventListener("click", () => {
       const id = card.getAttribute("data-open");
