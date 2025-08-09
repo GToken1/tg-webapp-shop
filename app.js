@@ -6,11 +6,11 @@ const money = (n) => `${fmt.format(n)} ${CURRENCY}`;
 
 const products = [
   { id:"mavic4pro", name:"DJI Mavic 4 Pro (комбо)", price:209900,
-    img:"https://www1.djicdn.com/cms/uploads/d275d97e1a2bbcf062c59b65d8a2e0d3@3840*2160.png" },
+    img:"img/mavic4pro.jpg" },
   { id:"mavic3pro", name:"DJI Mavic 3 Pro (комбо)", price:179900,
-    img:"https://www1.djicdn.com/cms/uploads/5c464c7a88a9a2f34f11342e893f8cfc@3840*2160.png" },
+    img:"img/mavic3pro.jpg" },
   { id:"mini4pro",  name:"DJI Mini 4 Pro Fly More", price:122900,
-    img:"https://www1.djicdn.com/cms/uploads/f3e13d40c7f307f2de8e2e4e69c5d45b@3840*2160.png" }
+    img:"img/mini4pro.jpg" }
 ];
 
 const cart = new Map();
@@ -110,11 +110,11 @@ function submitOrder(){
       } finally {
         setTimeout(() => {
           tg.MainButton.hideProgress();
-          tg.close();
-        }, 300);
+          tg.close(); // iOS: даём время отправить данные
+        }, 700);
       }
     } else {
-      alert("Order:\n"+JSON.stringify(payload,null,2));
+      alert("Order:\\n"+JSON.stringify(payload,null,2));
     }
   });
 }
