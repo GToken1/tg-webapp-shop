@@ -6,85 +6,94 @@ const fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
 const money = n => `${fmt.format(n)} ${CURRENCY}`;
 
 /**
- * ТОВАРЫ — цены примерные, подставь свои.
- * Фото — ИМЕННО ваши файлы из корня репо.
+ * ТОВАРЫ — цены примерные, пути к фото точные из твоего репо.
+ * Для проблемных картинок добавил ?v=4 — это ломает кеш Telegram WebView.
  */
 const products = [
   {
-    id:"mavic4pro",
-    name:"DJI Mavic 4 Pro (дрон)",
+    id: "mavic4pro",
+    name: "DJI Mavic 4 Pro (дрон)",
     price: 209900,
     images: [
-      "mavic4pro-1.jpg","mavic4pro-2.jpg","mavic4pro-3.jpg",
-      "mavic4pro-4.jpg","mavic4pro-5.jpg","mavic4pro-6.jpg","mavic4pro-7.jpg"
+      "mavic4pro-1.jpg?v=4","mavic4pro-2.jpg?v=4","mavic4pro-3.jpg?v=4",
+      "mavic4pro-4.jpg?v=4","mavic4pro-5.jpg?v=4","mavic4pro-6.jpg?v=4",
+      "mavic4pro-7.jpg?v=4"
     ]
   },
   {
-    id:"mavic4pro_creator",
-    name:"DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
+    id: "mavic4pro_creator",
+    name: "DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
     price: 239900,
     images: [
-  "mavic4pro-512gb-creator-combo-1.jpg",
-  "mavic4pro-512gb-creator-combo-2.jpg",
-  "mavic4pro-512gb-creator-combo-3.jpg",
-  "mavic4pro-512gb-creator-combo-4.jpg",
-  "mavic4pro-512gb-creator-combo-5.jpg",
-  "mavic4pro-512gb-creator-combo-6.jpg",
-  "mavic4pro-512gb-creator-combo-7.jpg"
-]
+      "mavic4pro-512gb-creator-combo-1.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-2.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-3.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-4.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-5.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-6.jpg?v=4",
+      "mavic4pro-512gb-creator-combo-7.jpg?v=4"
+    ]
   },
   {
-    id:"mavic4pro_flymore",
-    name:"DJI Mavic 4 Pro Fly More Combo",
+    id: "mavic4pro_flymore",
+    name: "DJI Mavic 4 Pro Fly More Combo",
     price: 199900,
     images: [
-      "mavic4proflymorecombo-1.jpg","mavic4proflymorecombo-2.jpg",
-      "mavic4proflymorecombo-3jpg", 
-      "mavic4proflymorecombo-4.jpg","mavic4proflymorecombo-5.jpg",
-      "mavic4proflymorecombo-6.jpg","mavic4proflymorecombo-7.jpg"
+      "mavic4proflymorecombo-1.jpg?v=4",
+      "mavic4proflymorecombo-2.jpg?v=4",
+      "mavic4proflymorecombo-3jpg.webp?v=4", // в репо именно так назван файл (без точки)
+      "mavic4proflymorecombo-4.jpg?v=4",
+      "mavic4proflymorecombo-5.jpg?v=4",
+      "mavic4proflymorecombo-6.jpg?v=4",
+      "mavic4proflymorecombo-7.jpg?v=4"
     ]
   },
   {
-    id:"neo_flymore",
-    name:"DJI Neo Fly More Combo",
+    id: "neo_flymore",
+    name: "DJI Neo Fly More Combo",
     price: 59900,
     images: [
-      "neo-fly-more-combo-1.jpg","neo-fly-more-combo-2.jpg",
-      "neo-fly-more-combo-3.jpg","neo-fly-more-combo-4.jpg",
-      "neo-fly-more-combo-5.jpg","neo-fly-more-combo-6.jpg"
+      "neo-fly-more-combo-1.jpg?v=4","neo-fly-more-combo-2.jpg?v=4",
+      "neo-fly-more-combo-3.jpg?v=4","neo-fly-more-combo-4.jpg?v=4",
+      "neo-fly-more-combo-5.jpg?v=4","neo-fly-more-combo-6.jpg?v=4"
     ]
   },
   {
-    id:"neo_motion_flymore",
-    name:"DJI Neo Motion Fly More Combo",
+    id: "neo_motion_flymore",
+    name: "DJI Neo Motion Fly More Combo",
     price: 69900,
     images: [
-      "neo-motion-fly-more-combo-1.jpg","neo-motion-fly-more-combo-2.jpg",
-      "neo-motion-fly-more-combo-3.jpg","neo-motion-fly-more-combo-4.jpg",
-      "neo-motion-fly-more-combo-5.jpg","neo-motion-fly-more-combo-6.jpg",
-      "neo-motion-fly-more-combo-7.jpg"
+      "neo-motion-fly-more-combo-1.jpg?v=4","neo-motion-fly-more-combo-2.jpg?v=4",
+      "neo-motion-fly-more-combo-3.jpg?v=4","neo-motion-fly-more-combo-4.jpg?v=4",
+      "neo-motion-fly-more-combo-5.jpg?v=4","neo-motion-fly-more-combo-6.jpg?v=4",
+      "neo-motion-fly-more-combo-7.jpg?v=4"
     ]
   },
   {
-    id:"osmo360_popular",
-    name:"DJI Osmo 360 Popular Combo",
+    id: "osmo360_popular",
+    name: "DJI Osmo 360 Popular Combo",
     price: 47900,
     images: [
-      "osmo360PopularCombo-1.jpg","osmo360PopularCombo-2.jpg","osmo360PopularCombo-3.jpg",
-      "osmo360PopularCombo-4.jpg","osmo360PopularCombo-5.jpg","osmo360PopularCombo-6.jpg",
-      "osmo360PopularCombo-7.jpg","osmo360PopularCombo-8.jpg","osmo360PopularCombo-9.jpg",
-      "osmo360PopularCombo-10.jpg"
+      "osmo360PopularCombo-1.jpg?v=4","osmo360PopularCombo-2.jpg?v=4",
+      "osmo360PopularCombo-3.jpg?v=4","osmo360PopularCombo-4.jpg?v=4",
+      "osmo360PopularCombo-5.jpg?v=4","osmo360PopularCombo-6.jpg?v=4",
+      "osmo360PopularCombo-7.jpg?v=4","osmo360PopularCombo-8.jpg?v=4",
+      "osmo360PopularCombo-9.jpg?v=4","osmo360PopularCombo-10.jpg?v=4"
     ]
   },
   {
-    id:"micmini",
-    name:"DJI Mic Mini (2TX+1RX+Case)",
+    id: "micmini",
+    name: "DJI Mic Mini (2TX+1RX+Case)",
     price: 19990,
     images: [
-      "MicMini-2TX+1RX+ChargingCase-1.jpg","MicMini-2TX+1RX+ChargingCase-2.jpg",
-      "MicMini-2TX+1RX+ChargingCase-3.jpg","MicMini-2TX+1RX+ChargingCase-4.jpg",
-      "MicMini-2TX+1RX+ChargingCase-5.jpg","MicMini-2TX+1RX+ChargingCase-6.jpg",
-      "MicMini-2TX+1RX+ChargingCase-7.jpg","MicMini-2TX+1RX+ChargingCase-8.jpg"
+      "MicMini-2TX+1RX+ChargingCase-1.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-2.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-3.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-4.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-5.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-6.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-7.jpg?v=4",
+      "MicMini-2TX+1RX+ChargingCase-8.jpg?v=4"
     ]
   }
 ];
@@ -103,6 +112,7 @@ function render(){
       </div>
     </div>`).join("");
 
+  // Добавление в корзину
   $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", (e) => {
     e.stopPropagation();
     const id = btn.dataset.id;
@@ -110,6 +120,7 @@ function render(){
     updateMainButton();
   }));
 
+  // Открытие галереи
   $list.querySelectorAll("[data-open]").forEach(card => {
     card.addEventListener("click", () => {
       const id = card.getAttribute("data-open");
