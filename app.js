@@ -1,16 +1,89 @@
 let tg;
 
+// ₽ формат
 const CURRENCY = "₽";
 const fmt = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
-const money = (n) => `${fmt.format(n)} ${CURRENCY}`;
+const money = n => `${fmt.format(n)} ${CURRENCY}`;
 
+/**
+ * ТОВАРЫ — цены примерные, подставь свои.
+ * Фото — ИМЕННО ваши файлы из корня репо.
+ */
 const products = [
-  { id:"mavic4pro", name:"DJI Mavic 4 Pro (комбо)", price:209900,
-    img:"img/mavic4pro.jpg" },
-  { id:"mavic3pro", name:"DJI Mavic 3 Pro (комбо)", price:179900,
-    img:"img/mavic3pro.jpg" },
-  { id:"mini4pro",  name:"DJI Mini 4 Pro Fly More", price:122900,
-    img:"img/mini4pro.jpg" }
+  {
+    id:"mavic4pro",
+    name:"DJI Mavic 4 Pro (дрон)",
+    price: 209900,
+    images: [
+      "mavic4pro-1.jpg","mavic4pro-2.jpg","mavic4pro-3.jpg",
+      "mavic4pro-4.jpg","mavic4pro-5.jpg","mavic4pro-6.jpg","mavic4pro-7.jpg"
+    ]
+  },
+  {
+    id:"mavic4pro_creator",
+    name:"DJI Mavic 4 Pro 512GB Creator Combo (RC Pro 2)",
+    price: 239900,
+    images: [
+      "mavic4pro-512gb-creator-combo-1.jpg","mavic4pro-512gb-creator-combo-2.jpg",
+      "mavic4pro-512gb-creator-combo-3.jpg","mavic4pro-512gb-creator-combo-4.jpg",
+      "mavic4pro-512gb-creator-combo-5.jpg","mavic4pro-512gb-creator-combo-6.jpg",
+      "mavic4pro-512gb-creator-combo-7.jpg","mavic4pro-7.jpg"
+    ]
+  },
+  {
+    id:"mavic4pro_flymore",
+    name:"DJI Mavic 4 Pro Fly More Combo",
+    price: 199900,
+    images: [
+      "mavic4proflymorecombo-1.jpg","mavic4proflymorecombo-2.jpg",
+      "mavic4proflymorecombo-3jpg.webp", // у тебя в репо именно такое имя
+      "mavic4proflymorecombo-4.jpg","mavic4proflymorecombo-5.jpg",
+      "mavic4proflymorecombo-6.jpg","mavic4proflymorecombo-7.jpg"
+    ]
+  },
+  {
+    id:"neo_flymore",
+    name:"DJI Neo Fly More Combo",
+    price: 59900,
+    images: [
+      "neo-fly-more-combo-1.jpg","neo-fly-more-combo-2.jpg",
+      "neo-fly-more-combo-3.jpg","neo-fly-more-combo-4.jpg",
+      "neo-fly-more-combo-5.jpg","neo-fly-more-combo-6.jpg"
+    ]
+  },
+  {
+    id:"neo_motion_flymore",
+    name:"DJI Neo Motion Fly More Combo",
+    price: 69900,
+    images: [
+      "neo-motion-fly-more-combo-1.jpg","neo-motion-fly-more-combo-2.jpg",
+      "neo-motion-fly-more-combo-3.jpg","neo-motion-fly-more-combo-4.jpg",
+      "neo-motion-fly-more-combo-5.jpg","neo-motion-fly-more-combo-6.jpg",
+      "neo-motion-fly-more-combo-7.jpg"
+    ]
+  },
+  {
+    id:"osmo360_popular",
+    name:"DJI Osmo 360 Popular Combo",
+    price: 47900,
+    images: [
+      "osmo360PopularCombo-1.jpg","osmo360PopularCombo-2.jpg","osmo360PopularCombo-3.jpg",
+      "osmo360PopularCombo-4.jpg","osmo360PopularCombo-5.jpg","osmo360PopularCombo-6.jpg",
+      "osmo360PopularCombo-7.jpg","osmo360PopularCombo-8.jpg","osmo360PopularCombo-9.jpg",
+      "osmo360PopularCombo-10.jpg"
+    ]
+  },
+  {
+    id:"micmini",
+    name:"DJI Mic Mini (2TX+1RX+Case)",
+    price: 19990,
+    images: [
+      "MicMini-2TX+1RX+ChargingCase-1.jpg","MicMini-2TX+1RX+ChargingCase-2.jpg",
+      "MicMini-2TX+1RX+ChargingCase-3.jpg","MicMini-2TX+1RX+ChargingCase-4.jpg",
+      "MicMini-2TX+1RX+ChargingCase-5.jpg","MicMini-2TX+1RX+ChargingCase-6.jpg",
+      "MicMini-2TX+1RX+ChargingCase-7.jpg","MicMini-2TX+1RX+ChargingCase-8.jpg"
+    ]
+  }
 ];
 
 const cart = new Map();
@@ -18,8 +91,8 @@ const $list = document.getElementById("products");
 
 function render(){
   $list.innerHTML = products.map(p => `
-    <div class="card">
-      <img src="${p.img}" alt="${p.name}"/>
+    <div class="card" data-open="${p.id}">
+      <img src="${p.images[0]}" alt="${p.name}"/>
       <div class="body">
         <div class="name">${p.name}</div>
         <div class="price">${money(p.price)}</div>
@@ -27,11 +100,20 @@ function render(){
       </div>
     </div>`).join("");
 
-  $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", () => {
+  $list.querySelectorAll(".add").forEach(btn => btn.addEventListener("click", (e) => {
+    e.stopPropagation();
     const id = btn.dataset.id;
     cart.set(id, (cart.get(id)||0)+1);
     updateMainButton();
   }));
+
+  $list.querySelectorAll("[data-open]").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.getAttribute("data-open");
+      const p = products.find(x=>x.id===id);
+      openGallery(p);
+    });
+  });
 }
 
 function updateMainButton(){
@@ -64,6 +146,36 @@ function showFooter(text){
                  <button class="btn">${text}</button>`;
   f.querySelector(".btn").addEventListener("click", submitOrder);
   document.body.appendChild(f);
+}
+
+function openGallery(p){
+  let idx = 0;
+  const overlay = document.createElement("div");
+  overlay.className = "modal";
+  overlay.innerHTML = `
+    <div class="form" style="gap:8px;max-width:420px;">
+      <h3 class="h3" style="margin:0">${p.name}</h3>
+      <img id="big" src="${p.images[0]}" style="width:100%;border-radius:12px;object-fit:contain;max-height:60vh"/>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        ${p.images.map((src,i)=>`<img data-i="${i}" src="${src}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #eee;cursor:pointer">`).join("")}
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <button class="btn gray" id="prev">◀</button>
+        <div style="font-weight:700">${money(p.price)}</div>
+        <button class="btn blue" id="add">ADD</button>
+      </div>
+      <button class="btn gray" id="close" style="align-self:flex-end">Закрыть</button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const big = overlay.querySelector("#big");
+  const thumbs = overlay.querySelectorAll("[data-i]");
+  function show(i){ idx = (i+p.images.length)%p.images.length; big.src = p.images[idx]; }
+  thumbs.forEach(t => t.addEventListener("click", ()=> show(+t.dataset.i)));
+  overlay.querySelector("#prev").onclick = ()=> show(idx-1);
+  overlay.querySelector("#add").onclick = ()=> { cart.set(p.id,(cart.get(p.id)||0)+1); updateMainButton(); };
+  overlay.querySelector("#close").onclick = ()=> overlay.remove();
+  overlay.addEventListener("click", (e)=> { if(e.target===overlay) overlay.remove(); });
 }
 
 function showOrderForm(onSubmit) {
@@ -110,11 +222,11 @@ function submitOrder(){
       } finally {
         setTimeout(() => {
           tg.MainButton.hideProgress();
-          tg.close(); // iOS: даём время отправить данные
+          tg.close(); // даём iOS время отправить данные
         }, 700);
       }
     } else {
-      alert("Order:\\n"+JSON.stringify(payload,null,2));
+      alert("Order:\n"+JSON.stringify(payload,null,2));
     }
   });
 }
